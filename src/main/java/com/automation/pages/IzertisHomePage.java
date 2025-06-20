@@ -11,13 +11,13 @@ import java.util.List;
 public class IzertisHomePage extends BasePage {
 
     // Locators de la página principal
-    @FindBy(css = "[data-testid='logo'], .logo, img[alt*='Izertis']")
+    @FindBy(id = "logoIzertis")
     private WebElement logo;
 
-    @FindBy(css = "nav[role='navigation'], .main-navigation, .navbar")
+    @FindBy(className = "navbar-toggler collapsed")
     private WebElement mainNavigation;
 
-    @FindBy(xpath = "//a[contains(text(),'What do we do') or contains(text(),'Qué hacemos')]")
+    @FindBy(className = "btn-- btn--primary animated-button")
     private WebElement whatWeDoMenu;
 
     @FindBy(xpath = "//a[contains(text(),'Success stories') or contains(text(),'Casos de éxito')]")
@@ -50,10 +50,10 @@ public class IzertisHomePage extends BasePage {
     @FindBy(xpath = "//a[@href='/es/' or contains(text(),'ES')]")
     private WebElement spanishLanguageOption;
 
-    @FindBy(css = ".services-section, .technology-section")
+    @FindBy(className  = "iz--impulso-tecnologico container-fluid")
     private WebElement servicesSection;
 
-    @FindBy(xpath = "//a[contains(text(),'DX Strategy') or contains(text(),'Customer Experience') or contains(text(),'Software Engineering')]")
+    @FindBy(id = "navbar_com_liferay_site_navigation_menu_web_portlet_SiteNavigationMenuPortlet_INSTANCE_S1FlH3ijzYPN")
     private List<WebElement> serviceLinks;
 
     @FindBy(id = "gdpr-cookie-message")
