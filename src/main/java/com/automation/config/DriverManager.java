@@ -31,7 +31,13 @@ public class DriverManager {
     public static void initializeDriver() {
         String browserName = config.getBrowser().toLowerCase();
         
+        // Sobrescribir con propiedades del sistema si están definidas
+        if (System.getProperty("browser") != null) {
+            browserName = System.getProperty("browser").toLowerCase();
+        }
+        
         logger.info("Inicializando navegador: {}", browserName);
+        logger.info("Modo headless: {}", isHeadlessMode());
         
         WebDriver driver = switch (browserName) {
             case "chrome" -> initializeChromeDriver();
@@ -47,30 +53,54 @@ public class DriverManager {
         driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(config.getImplicitWait()));
         driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(config.getPageLoadTimeout()));
 
-        // Maximizar ventana si está configurado
-        if (config.shouldMaximizeWindow()) {
+        // Maximizar ventana si está configurado y no es headless
+        if (config.shouldMaximizeWindow() && !isHeadlessMode()) {
             driver.manage().window().maximize();
         }
 
         driverThreadLocal.set(driver);
         logger.info("WebDriver inicializado correctamente");
     }
+    
+    /**
+     * Verifica si debe ejecutarse en modo headless
+     */
+    private static boolean isHeadlessMode() {
+        // Primero verificar propiedades del sistema
+        String headlessProperty = System.getProperty("headless");
+        if (headlessProperty != null) {
+            return Boolean.parseBoolean(headlessProperty);
+        }
+        
+        // Luego verificar configuración
+        return config.isHeadless();
+    }
 
     private static WebDriver initializeChromeDriver() {
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
         
-        if (config.isHeadless()) {
-            options.addArguments("--headless");
+        // Configuración headless mejorada
+        if (isHeadlessMode()) {
+            options.addArguments("--headless=new"); // Usar nuevo modo headless
+            options.addArguments("--disable-gpu");
+            options.addArguments("--window-size=1920,1080"); // Tamaño fijo en headless
         }
         
+        // Argumentos comunes para estabilidad
         options.addArguments("--no-sandbox");
         options.addArguments("--disable-dev-shm-usage");
-        options.addArguments("--disable-gpu");
         options.addArguments("--disable-extensions");
         options.addArguments("--disable-web-security");
         options.addArguments("--allow-running-insecure-content");
+        options.addArguments("--disable-blink-features=AutomationControlled");
+        options.addArguments("--disable-features=VizDisplayCompositor");
         
+        // Evitar detección de automatización
+        options.setExperimentalOption("useAutomationExtension", false);
+        options.setExperimentalOption("excludeSwitches", new String[]{"enable-automation"});
+        
+        logger.info("Chrome configurado con headless: {}", isHeadlessMode());
         return new ChromeDriver(options);
     }
 
@@ -78,10 +108,13 @@ public class DriverManager {
         WebDriverManager.firefoxdriver().setup();
         FirefoxOptions options = new FirefoxOptions();
         
-        if (config.isHeadless()) {
+        if (isHeadlessMode()) {
             options.addArguments("--headless");
+            options.addArguments("--width=1920");
+            options.addArguments("--height=1080");
         }
         
+        logger.info("Firefox configurado con headless: {}", isHeadlessMode());
         return new FirefoxDriver(options);
     }
 
@@ -89,10 +122,18 @@ public class DriverManager {
         WebDriverManager.edgedriver().setup();
         EdgeOptions options = new EdgeOptions();
         
-        if (config.isHeadless()) {
-            options.addArguments("--headless");
+        if (isHeadlessMode()) {
+            options.addArguments("--headless=new");
+            options.addArguments("--disable-gpu");
+            options.addArguments("--window-size=1920,1080");
         }
         
+        // Argumentos comunes para Edge
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--disable-extensions");
+        
+        logger.info("Edge configurado con headless: {}", isHeadlessMode());
         return new EdgeDriver(options);
     }
 

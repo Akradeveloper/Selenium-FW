@@ -10,14 +10,14 @@ import java.util.List;
  */
 public class IzertisHomePage extends BasePage {
 
-    // Locators de la página principal
-    @FindBy(id = "logoIzertis")
+    // Locators de la página principal - Simplicados y robustos
+    @FindBy(css = "img[alt*='Izertis'], .logo, [data-testid='logo']")
     private WebElement logo;
 
-    @FindBy(className = "navbar-toggler collapsed")
+    @FindBy(css = "nav, .navbar, .main-navigation")
     private WebElement mainNavigation;
 
-    @FindBy(className = "btn-- btn--primary animated-button")
+    @FindBy(xpath = "//a[contains(text(),'What do we do') or contains(text(),'Qué hacemos')] | //button[contains(text(),'What do we do')]")
     private WebElement whatWeDoMenu;
 
     @FindBy(xpath = "//a[contains(text(),'Success stories') or contains(text(),'Casos de éxito')]")
@@ -35,25 +35,25 @@ public class IzertisHomePage extends BasePage {
     @FindBy(xpath = "//a[contains(text(),'Work with us') or contains(text(),'Trabaja con nosotros')]")
     private WebElement workWithUsLink;
 
-    @FindBy(css = "h1, .main-title, .hero-title")
+    @FindBy(css = "h1, h2, .main-title, .hero-title")
     private WebElement mainTitle;
 
-    @FindBy(xpath = "//h2[contains(text(),'Passion for Technology') or contains(text(),'Pasión por la Tecnología')]")
+    @FindBy(xpath = "//h1[contains(text(),'Passion') or contains(text(),'Technology') or contains(text(),'Pasión')] | //h2[contains(text(),'Passion') or contains(text(),'Technology')]")
     private WebElement passionForTechnologyTitle;
 
-    @FindBy(css = ".language-selector, .lang-switcher")
+    @FindBy(css = "select[class*='language'], .language-selector, .lang-switcher")
     private WebElement languageSelector;
 
-    @FindBy(xpath = "//a[@href='/en/' or contains(@href,'language') or contains(text(),'EN')]")
+    @FindBy(xpath = "//a[contains(@href,'/en/') or contains(text(),'EN') or contains(text(),'English')]")
     private WebElement englishLanguageOption;
 
-    @FindBy(xpath = "//a[@href='/es/' or contains(text(),'ES')]")
+    @FindBy(xpath = "//a[contains(@href,'/es/') or contains(text(),'ES') or contains(text(),'Español')]")
     private WebElement spanishLanguageOption;
 
-    @FindBy(className  = "iz--impulso-tecnologico container-fluid")
+    @FindBy(css = ".services-section, .technology-section, section")
     private WebElement servicesSection;
 
-    @FindBy(id = "navbar_com_liferay_site_navigation_menu_web_portlet_SiteNavigationMenuPortlet_INSTANCE_S1FlH3ijzYPN")
+    @FindBy(css = "section a, .service-link, .services a, [href*='services']")
     private List<WebElement> serviceLinks;
 
     @FindBy(id = "gdpr-cookie-message")
