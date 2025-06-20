@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="Izertis Automation Suite" verbose="1" parallel="false" thread-count="1">
+    
+    <parameter name="browser" value="chrome"/>
+    <parameter name="baseUrl" value="https://www.izertis.com"/>
+    
+    <listeners>
+        <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+    </listeners>
+
+    <test name="Izertis Home Page Tests" preserve-order="true">
+        <parameter name="testType" value="smoke"/>
+        
+        <classes>
+            <class name="com.automation.tests.IzertisHomePageTest">
+                <methods>
+                    <include name="testHomePageLoads"/>
+                    <include name="testMainUIElementsPresent"/>
+                    <include name="testMainMenuNavigation"/>
+                    <include name="testServicesSection"/>
+                    <include name="testLanguageSwitching"/>
+                    <include name="testFooterSection"/>
+                    <include name="testPageSectionNavigation"/>
+                    <include name="testLogoFunctionality"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <test name="Smoke Tests Only" preserve-order="true">
+        <parameter name="testType" value="smoke"/>
+        
+        <classes>
+            <class name="com.automation.tests.IzertisHomePageTest">
+                <methods>
+                    <include name="testHomePageLoads"/>
+                    <include name="testMainUIElementsPresent"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite> 
