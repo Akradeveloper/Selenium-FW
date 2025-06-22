@@ -3,6 +3,7 @@ package com.automation.tests;
 import com.automation.pages.IzertisHomePage;
 import io.qameta.allure.*;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -15,57 +16,63 @@ public class IzertisHomePageTest extends BaseTest {
 
     private IzertisHomePage homePage;
 
-    @BeforeMethod(dependsOnMethods = "setUp")
-    public void setUpHomePage() {
-        homePage = new IzertisHomePage();
+    @BeforeMethod(alwaysRun = true)
+    public void setUpTest() {
+        super.setUp(); // 1. Inicializa el WebDriver
+        homePage = new IzertisHomePage(); // 2. Inicializa la página (ahora con un driver válido)
     }
 
-    @Test(priority = 1)
+    @AfterMethod(alwaysRun = true)
+    public void tearDownTest() {
+        super.tearDown();
+    }
+
+    @Test(priority = 1, description = "Verificar que la página principal de Izertis carga correctamente", groups = {"smoke"})
     @Story("Page Loading")
-    @Description("Verificar que la página principal de Izertis carga correctamente")
     @Severity(SeverityLevel.BLOCKER)
     public void testHomePageLoads() {
-        addAllureStep("Navegando a la página principal de Izertis");
+        Allure.step("Paso 1: Navegar a la página principal y aceptar cookies");
         homePage.navigateToBase();
-        
-        addAllureStep("Aceptando cookies si aparece el banner");
         homePage.acceptCookiesIfPresent();
-        
-        addAllureStep("Verificando que la página está cargada");
+
+        Allure.step("Paso 2: Verificar que la página está cargada");
         Assert.assertTrue(homePage.isPageLoaded(), "La página principal no se cargó correctamente");
-        
-        addAllureStep("Verificando el título de la página");
-        String pageTitle = homePage.getPageTitle();
-        addAllureInfo("Page Title", pageTitle);
-        Assert.assertTrue(pageTitle.toLowerCase().contains("izertis"), 
-                         "El título de la página no contiene 'Izertis'");
-        
-        addAllureStep("Verificando la URL actual");
-        String currentUrl = homePage.getCurrentUrl();
-        addAllureInfo("Current URL", currentUrl);
-        Assert.assertTrue(currentUrl.contains("izertis.com"), 
-                         "La URL no contiene 'izertis.com'");
+
+        Allure.step("Paso 3: Verificar el título y la URL de la página", () -> {
+            Allure.step("Verificando el título de la página", () -> {
+                String pageTitle = homePage.getPageTitle();
+                Assert.assertTrue(pageTitle.toLowerCase().contains("izertis"),
+                        "El título de la página '" + pageTitle + "' no contiene 'izertis'");
+            });
+            Allure.step("Verificando la URL actual", () -> {
+                String currentUrl = homePage.getCurrentUrl();
+                Assert.assertTrue(currentUrl.contains("izertis.com"),
+                        "La URL '" + currentUrl + "' no contiene 'izertis.com'");
+            });
+        });
     }
 
-    @Test(priority = 2)
+    @Test(priority = 2, description = "Verificar que los elementos principales de la UI están presentes", groups = {"smoke"})
     @Story("UI Elements")
-    @Description("Verificar que los elementos principales de la UI están presentes")
     @Severity(SeverityLevel.CRITICAL)
     public void testMainUIElementsPresent() {
-        addAllureStep("Navegando a la página principal");
+        Allure.step("Paso 1: Navegar a la página principal y aceptar cookies");
         homePage.navigateToBase();
         homePage.acceptCookiesIfPresent();
-        
-        addAllureStep("Verificando que el logo es visible");
-        Assert.assertTrue(homePage.isLogoVisible(), "El logo de Izertis no es visible");
-        
-        addAllureStep("Verificando que la navegación principal es visible");
-        Assert.assertTrue(homePage.isMainNavigationVisible(), "La navegación principal no es visible");
-        
-        addAllureStep("Obteniendo el título principal de la página");
-        String mainTitle = homePage.getMainTitle();
-        addAllureInfo("Main Title", mainTitle);
-        Assert.assertFalse(mainTitle.equals("Título no encontrado"), 
-                          "No se pudo encontrar el título principal");
+
+        Allure.step("Paso 2: Verificar elementos visuales clave", () -> {
+            Allure.step("Verificando que el logo es visible");
+            Assert.assertTrue(homePage.isLogoVisible(), "El logo de Izertis no es visible");
+
+            Allure.step("Verificando que la navegación principal es visible");
+            Assert.assertTrue(homePage.isMainNavigationVisible(), "La navegación principal no es visible");
+
+            Allure.step("Verificando el título principal de la página", () -> {
+                String mainTitle = homePage.getMainTitle();
+                Assert.assertFalse(mainTitle.isEmpty(), "El título principal está vacío.");
+                Assert.assertFalse(mainTitle.equals("Título no encontrado"),
+                        "No se pudo encontrar el título principal. Valor: " + mainTitle);
+            });
+        });
     }
 }
