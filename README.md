@@ -25,16 +25,19 @@ Este proyecto contiene un framework de automatización desarrollado en Java con 
 - **Screenshots Automáticos**: Capturas de pantalla automáticas en caso de fallos
 - **Gestión Automática de Drivers**: WebDriverManager para gestión automática de drivers
 - **TestNG Integration**: Framework de testing robusto con TestNG
+- **Soporte para BDD**: Integración con Cucumber para pruebas basadas en comportamiento
 
 ## 🛠 Tecnologías Utilizadas
 
 - **Java 17**
 - **Selenium WebDriver 4.18.1**
-- **TestNG 7.9.0**
+- **Cucumber 7.15.0**
+- **TestNG 7.9.0** (usado como runner)
 - **Maven 3.x**
 - **Allure 2.25.0** (Reportes)
 - **WebDriverManager 5.7.0**
 - **Logback 1.5.0** (Logging)
+- **Allure CLI** (opcional, para reportes visuales)
 
 ## 📋 Prerequisitos
 
@@ -130,15 +133,36 @@ izertis-selenium-automation/
 │   │       └── logback.xml          # Configuración de logging
 │   └── test/
 │       ├── java/
-│       │   └── com/automation/tests/ # Clases de prueba
-│       │       ├── BaseTest.java
-│       │       └── IzertisHomePageTest.java
+│       │   └── com/automation/
+│       │       ├── runners/          # Test runners de Cucumber
+│       │       │   └── TestRunner.java
+│       │       └── stepdefinitions/  # Definiciones de pasos
+│       │           └── IzertisStepDefinitions.java
 │       └── resources/
+│           └── features/             # Archivos .feature de Gherkin
+│               └── izertis.feature
 ├── target/                          # Archivos generados
 ├── logs/                           # Archivos de log
 ├── pom.xml                         # Configuración de Maven
 ├── testng.xml                      # Configuración de TestNG
 └── README.md                       # Este archivo
+```
+
+## 🥒 Gherkin / Cucumber
+
+Este proyecto utiliza Cucumber para escribir los casos de prueba en un lenguaje natural llamado Gherkin.
+
+- **Archivos Feature**: Se encuentran en `src/test/resources/features`.
+- **Definiciones de Pasos**: Se encuentran en `src/test/java/com/automation/stepdefinitions`.
+
+### Ejemplo de Escenario
+
+```gherkin
+Feature: Izertis Website
+
+  Scenario: Visit Izertis home page and verify title
+    Given I navigate to "https://www.izertis.com"
+    Then I should see the page title as "Izertis | Transformación digital, innovación tecnológica y outsourcing"
 ```
 
 ## ⚙️ Configuración
@@ -180,23 +204,7 @@ export BASE_URL=https://www.izertis.com/en/
 mvn test
 ```
 
-### Ejecutar Suite Específica
-
-```bash
-mvn test -DsuiteXmlFile=testng.xml
-```
-
-### Ejecutar Pruebas de Smoke
-
-```bash
-mvn test -Dgroups=smoke
-```
-
-### Ejecutar Prueba Específica
-
-```bash
-mvn test -Dtest=IzertisHomePageTest#testHomePageLoads
-```
+Este comando ejecutará todos los escenarios de Cucumber definidos en los archivos `.feature`.
 
 ### Ejecutar con Navegador Específico
 
@@ -208,12 +216,6 @@ mvn test -Dbrowser=firefox
 
 ```bash
 mvn test -Dheadless=true
-```
-
-### Ejecutar con URL Específica
-
-```bash
-mvn test -Dbase.url=https://www.izertis.com/en/
 ```
 
 ## 📊 Reportes

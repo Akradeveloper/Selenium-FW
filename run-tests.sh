@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script para ejecutar pruebas de automatización de Izertis
+# Script para ejecutar pruebas de automatización con Cucumber
 # =========================================================
 
 # Colores para output
@@ -12,24 +12,23 @@ NC='\033[0m' # No Color
 
 # Función para mostrar ayuda
 show_help() {
-    echo -e "${BLUE}=== Izertis Automation Test Runner ===${NC}"
+    echo -e "${BLUE}=== Izertis Cucumber Test Runner ===${NC}"
     echo ""
     echo "Uso: $0 [opciones]"
     echo ""
     echo "Opciones:"
     echo "  -h, --help              Mostrar esta ayuda"
-    echo "  -a, --all               Ejecutar todas las pruebas"
-    echo "  -s, --smoke             Ejecutar solo pruebas de smoke"
+    echo "  -t, --tags TAGS         Filtrar escenarios por tags. (Ej: \"@smoke and not @wip\")"
     echo "  -b, --browser BROWSER   Especificar navegador (chrome, firefox, edge)"
     echo "  -e, --headless          Ejecutar en modo headless"
     echo "  -r, --report            Generar y abrir reporte de Allure"
     echo "  -c, --clean             Limpiar archivos de compilación"
     echo ""
     echo "Ejemplos:"
-    echo "  $0 --all                # Ejecutar todas las pruebas"
-    echo "  $0 --smoke --headless   # Ejecutar pruebas de smoke en modo headless"
-    echo "  $0 --browser firefox    # Ejecutar con Firefox"
-    echo "  $0 --report             # Solo generar reporte"
+    echo "  $0                        # Ejecutar todas las pruebas"
+    echo "  $0 --tags \"@smoke\"      # Ejecutar pruebas de smoke"
+    echo "  $0 --browser firefox      # Ejecutar con Firefox"
+    echo "  $0 --report               # Solo generar reporte"
 }
 
 # Función para limpiar archivos
@@ -46,13 +45,17 @@ clean_project() {
 
 # Función para ejecutar pruebas
 run_tests() {
-    local test_type=$1
+    local tags=$1
     local browser=$2
     local headless=$3
     
-    echo -e "${BLUE}Ejecutando pruebas de automatización...${NC}"
+    echo -e "${BLUE}Ejecutando pruebas de automatización con Cucumber...${NC}"
     echo -e "${YELLOW}Configuración:${NC}"
-    echo -e "  Tipo: $test_type"
+    if [ -z "$tags" ]; then
+        echo -e "  Tags: (todos)"
+    else
+        echo -e "  Tags: $tags"
+    fi
     echo -e "  Navegador: $browser"
     echo -e "  Headless: $headless"
     echo ""
@@ -60,8 +63,8 @@ run_tests() {
     # Construir comando Maven
     local mvn_cmd="mvn test"
     
-    if [ "$test_type" = "smoke" ]; then
-        mvn_cmd="$mvn_cmd -DsuiteXmlFile=testng.xml -Dtest.type=smoke"
+    if [ ! -z "$tags" ]; then
+        mvn_cmd="$mvn_cmd -Dcucumber.filter.tags=\"$tags\""
     fi
     
     if [ "$browser" != "default" ]; then
@@ -94,7 +97,7 @@ generate_report() {
     # Verificar si existen resultados de Allure
     if [ ! -d "target/allure-results" ] || [ -z "$(ls -A target/allure-results 2>/dev/null)" ]; then
         echo -e "${RED}✗ No se encontraron resultados de Allure en 'target/allure-results/'${NC}"
-        echo -e "${YELLOW}Ejecuta primero las pruebas con: ./run-tests.sh --all${NC}"
+        echo -e "${YELLOW}Ejecuta primero las pruebas con: ./run-tests.sh${NC}"
         return 1
     fi
     
@@ -117,12 +120,12 @@ generate_report() {
     else
         echo -e "${GREEN}✓ Usando Allure CLI...${NC}"
         echo -e "${YELLOW}Generando reporte HTML...${NC}"
-        allure generate allure-results --clean -o allure-report
+        allure generate target/allure-results --clean -o target/allure-report
         
         if [ $? -eq 0 ]; then
-            echo -e "${GREEN}✓ Reporte generado en: allure-report/${NC}"
+            echo -e "${GREEN}✓ Reporte generado en: target/allure-report/${NC}"
             echo -e "${BLUE}Abriendo reporte en el navegador...${NC}"
-            allure open allure-report
+            allure open target/allure-report
         else
             echo -e "${RED}✗ Error al generar el reporte${NC}"
             return 1
@@ -131,7 +134,7 @@ generate_report() {
 }
 
 # Variables por defecto
-TEST_TYPE="all"
+TAGS=""
 BROWSER="default"
 HEADLESS="false"
 CLEAN_ONLY="false"
@@ -144,13 +147,9 @@ while [[ $# -gt 0 ]]; do
             show_help
             exit 0
             ;;
-        -a|--all)
-            TEST_TYPE="all"
-            shift
-            ;;
-        -s|--smoke)
-            TEST_TYPE="smoke"
-            shift
+        -t|--tags)
+            TAGS="$2"
+            shift 2
             ;;
         -b|--browser)
             BROWSER="$2"
@@ -205,7 +204,7 @@ if [ "$REPORT_ONLY" = "true" ]; then
 fi
 
 # Ejecutar pruebas
-run_tests "$TEST_TYPE" "$BROWSER" "$HEADLESS"
+run_tests "$TAGS" "$BROWSER" "$HEADLESS"
 test_result=$?
 
 # Generar reporte si las pruebas se ejecutaron
