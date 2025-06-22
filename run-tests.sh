@@ -92,8 +92,8 @@ generate_report() {
     echo -e "${BLUE}Generando reporte de Allure...${NC}"
     
     # Verificar si existen resultados de Allure
-    if [ ! -d "allure-results" ] || [ -z "$(ls -A allure-results 2>/dev/null)" ]; then
-        echo -e "${RED}✗ No se encontraron resultados de Allure en 'allure-results/'${NC}"
+    if [ ! -d "target/allure-results" ] || [ -z "$(ls -A target/allure-results 2>/dev/null)" ]; then
+        echo -e "${RED}✗ No se encontraron resultados de Allure en 'target/allure-results/'${NC}"
         echo -e "${YELLOW}Ejecuta primero las pruebas con: ./run-tests.sh --all${NC}"
         return 1
     fi
