@@ -1,7 +1,6 @@
 package com.automation.pages;
 
 import com.automation.config.Configuration;
-import com.automation.config.DriverManager;
 import com.automation.utils.ElementUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -17,10 +16,12 @@ public abstract class BasePage {
     protected static final Logger logger = LoggerFactory.getLogger(BasePage.class);
     protected WebDriver driver;
     protected Configuration config;
+    protected ElementUtils elementUtils;
 
     public BasePage(WebDriver driver) {
         this.driver = driver;
         this.config = Configuration.getInstance();
+        this.elementUtils = new ElementUtils(driver);
         PageFactory.initElements(driver, this);
     }
 
@@ -61,70 +62,70 @@ public abstract class BasePage {
      * Verifica si un elemento está presente en la página
      */
     protected boolean isElementPresent(By locator) {
-        return ElementUtils.isElementPresent(locator);
+        return elementUtils.isElementPresent(locator);
     }
 
     /**
      * Verifica si un elemento está visible
      */
     protected boolean isElementVisible(WebElement element) {
-        return ElementUtils.isElementVisible(element);
+        return elementUtils.isElementVisible(element);
     }
 
     /**
      * Clickea un elemento
      */
     protected void clickElement(WebElement element) {
-        ElementUtils.clickElement(element);
+        elementUtils.clickElement(element);
     }
 
     /**
      * Clickea un elemento usando locator
      */
     protected void clickElement(By locator) {
-        ElementUtils.clickElement(locator);
+        elementUtils.clickElement(locator);
     }
 
     /**
      * Envía texto a un elemento
      */
     protected void sendKeys(WebElement element, String text) {
-        ElementUtils.sendKeys(element, text);
+        elementUtils.sendKeys(element, text);
     }
 
     /**
      * Obtiene texto de un elemento
      */
     protected String getText(WebElement element) {
-        return ElementUtils.getText(element);
+        return elementUtils.getText(element);
     }
 
     /**
      * Hace scroll hacia un elemento
      */
     protected void scrollToElement(WebElement element) {
-        ElementUtils.scrollToElement(element);
+        elementUtils.scrollToElement(element);
     }
 
     /**
      * Hace hover sobre un elemento
      */
     protected void hoverOnElement(WebElement element) {
-        ElementUtils.hoverOnElement(element);
+        elementUtils.hoverOnElement(element);
     }
 
     /**
      * Espera a que un elemento sea visible
      */
     protected WebElement waitForElementToBeVisible(By locator) {
-        return ElementUtils.waitForElementToBeVisible(locator);
+        return elementUtils.waitForElementToBeVisible(locator);
     }
 
     /**
      * Espera a que un elemento sea clickeable
      */
     protected WebElement waitForElementToBeClickable(By locator) {
-        return ElementUtils.waitForElementToBeClickable(locator);
+        return elementUtils.waitForElementToBeClickable(locator);
     }
 
     /**
