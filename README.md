@@ -12,19 +12,20 @@ Este proyecto contiene un framework de automatización desarrollado en Java con 
 - [Configuración](#configuración)
 - [Ejecución de Pruebas](#ejecución-de-pruebas)
 - [Reportes](#reportes)
+- [Casos de Prueba Incluidos](#casos-de-prueba-incluidos)
 - [Buenas Prácticas](#buenas-prácticas)
 - [Contribuir](#contribuir)
 
 ## ✨ Características
 
-- **Page Object Model (POM)**: Implementación del patrón Page Object para mejor mantenibilidad
-- **Cross-browser Testing**: Soporte para Chrome, Firefox y Edge
-- **Configuración Flexible**: Configuración externa mediante archivos properties
-- **Reportes Detallados**: Integración con Allure para reportes visuales
-- **Logging Avanzado**: Sistema de logging con Logback
-- **Screenshots Automáticos**: Capturas de pantalla automáticas en caso de fallos
-- **Gestión Automática de Drivers**: WebDriverManager para gestión automática de drivers
-- **TestNG Integration**: Framework de testing robusto con TestNG
+- **Page Object Model (POM)**: Implementación del patrón Page Object para mejor mantenibilidad.
+- **Cross-browser Testing**: Soporte para Chrome, Firefox y Edge.
+- **Configuración Flexible**: Configuración externa mediante archivos `config.properties`.
+- **Reportes Detallados**: Integración con Allure para reportes visuales y descriptivos.
+- **Logging Avanzado**: Sistema de logging con Logback para un seguimiento claro de la ejecución.
+- **Listener de TestNG Centralizado**: Capturas de pantalla automáticas en fallos y gestión centralizada de eventos de test.
+- **Gestión Automática de Drivers**: WebDriverManager para la descarga y gestión automática de binarios de drivers.
+- **Framework de Testing Robusto**: Uso de TestNG con gestión de suites y grupos.
 
 ## 🛠 Tecnologías Utilizadas
 
@@ -35,123 +36,69 @@ Este proyecto contiene un framework de automatización desarrollado en Java con 
 - **Allure 2.25.0** (Reportes)
 - **WebDriverManager 5.7.0**
 - **Logback 1.5.0** (Logging)
+- **SLF4J 2.0.12**
 
 ## 📋 Prerequisitos
-
-Antes de ejecutar este proyecto, asegúrate de tener instalado:
 
 - ☕ **Java 17** o superior
 - 📦 **Maven 3.6** o superior
 - 🌐 **Google Chrome, Firefox o Microsoft Edge**
 - 🔧 **Git** (para clonar el repositorio)
-- 📊 **Allure CLI** (opcional, para reportes visuales)
-
-### Verificar Instalaciones
-
-```bash
-# Verificar Java
-java -version
-
-# Verificar Maven
-mvn -version
-
-# Verificar Git
-git --version
-
-# Verificar Allure (opcional)
-allure --version
-```
+- 📊 **Allure CLI** (opcional pero recomendado, para visualizar reportes)
 
 ## 🚀 Instalación
 
-### 1. Clonar el Repositorio
+1.  **Clonar el Repositorio**:
+    ```bash
+    git clone <URL_DEL_REPOSITORIO>
+    cd <NOMBRE_DEL_DIRECTORIO>
+    ```
 
-```bash
-git clone <repository-url>
-cd izertis-selenium-automation
-```
+2.  **Instalar Dependencias de Maven**:
+    El siguiente comando descargará todas las dependencias definidas en el `pom.xml`.
+    ```bash
+    mvn clean install
+    ```
 
-### 2. Instalar Dependencias
-
-```bash
-mvn clean install
-```
-
-### 3. Instalar Allure CLI (Opcional pero Recomendado)
-
-Para generar reportes visuales atractivos:
-
-**Mac (Homebrew):**
-```bash
-brew install allure
-```
-
-**Linux:**
-```bash
-# Descargar desde: https://docs.qameta.io/allure/#_installing_a_commandline
-# O usar el instalador automático:
-curl -o allure-2.34.0.tgz -Ls https://github.com/allure-framework/allure2/releases/download/2.34.0/allure-2.34.0.tgz
-sudo tar -zxvf allure-2.34.0.tgz -C /opt/
-sudo ln -s /opt/allure-2.34.0/bin/allure /usr/bin/allure
-```
-
-**Windows:**
-```bash
-# Usar Scoop:
-scoop install allure
-
-# O descargar manualmente desde GitHub
-```
-
-### 4. Verificar Instalación
-
-```bash
-mvn test -Dtest=IzertisHomePageTest#testHomePageLoads
-```
+3.  **Configurar Allure CLI (Opcional)**:
+    Para generar y visualizar los reportes de Allure, se recomienda instalar su Command-Line Interface.
+    -   **Windows (con Scoop)**: `scoop install allure`
+    -   **Mac (con Homebrew)**: `brew install allure`
+    -   **Linux**: Instrucciones en la [documentación oficial de Allure](https://docs.qameta.io/allure/#_installing_a_commandline).
 
 ## 📁 Estructura del Proyecto
 
 ```
-izertis-selenium-automation/
+Selenium-FW/
 ├── src/
 │   ├── main/
-│   │   ├── java/
-│   │   │   └── com/automation/
-│   │   │       ├── config/           # Configuraciones del framework
-│   │   │       │   ├── Configuration.java
-│   │   │       │   └── DriverManager.java
-│   │   │       ├── pages/            # Page Objects
-│   │   │       │   ├── BasePage.java
-│   │   │       │   └── IzertisHomePage.java
-│   │   │       └── utils/            # Utilidades
-│   │   │           └── ElementUtils.java
+│   │   ├── java/com/automation/
+│   │   │   ├── config/           # Clases de configuración (DriverManager, Configuration)
+│   │   │   ├── pages/            # Clases Page Object (BasePage, IzertisHomePage)
+│   │   │   └── utils/            # Clases de utilidad (ElementUtils)
 │   │   └── resources/
-│   │       ├── config.properties     # Configuración del framework
-│   │       └── logback.xml          # Configuración de logging
+│   │       ├── config.properties # Archivo de propiedades para la configuración
+│   │       └── logback.xml       # Configuración de logging
 │   └── test/
-│       ├── java/
-│       │   └── com/automation/tests/ # Clases de prueba
-│       │       ├── BaseTest.java
-│       │       └── IzertisHomePageTest.java
-│       └── resources/
-├── target/                          # Archivos generados
-├── logs/                           # Archivos de log
-├── pom.xml                         # Configuración de Maven
-├── testng.xml                      # Configuración de TestNG
-└── README.md                       # Este archivo
+│       ├── java/com/automation/
+│       │   ├── listeners/        # Listeners de TestNG (AllureTestListener)
+│       │   └── tests/            # Clases de prueba (BaseTest, IzertisHomePageTest)
+│       └── resources/            # Recursos para tests (vacío por ahora)
+├── logs/                         # Archivos de log generados
+├── pom.xml                       # Dependencias y configuración de Maven
+├── testng.xml                    # Definición de suites de TestNG
+└── README.md                     # Este archivo
 ```
 
 ## ⚙️ Configuración
 
-### Archivo de Configuración
-
-El archivo `src/main/resources/config.properties` contiene la configuración principal:
+El framework se configura principalmente a través del archivo `src/main/resources/config.properties`.
 
 ```properties
-# URL Base
+# URL base para las pruebas
 base.url=https://www.izertis.com
 
-# Configuración del Navegador
+# Configuración del navegador (chrome, firefox, edge)
 browser=chrome
 headless=false
 maximize.window=true
@@ -162,203 +109,137 @@ explicit.wait=15
 page.load.timeout=30
 ```
 
-### Variables de Entorno
-
-Puedes sobrescribir la configuración usando variables de entorno:
-
-```bash
-export BROWSER=firefox
-export HEADLESS=true
-export BASE_URL=https://www.izertis.com/en/
-```
+Puedes sobrescribir estos valores al ejecutar los tests desde la línea de comandos usando `-Dpropiedad=valor`.
 
 ## 🧪 Ejecución de Pruebas
 
-### Ejecutar Todas las Pruebas
+El proyecto utiliza Maven para gestionar el ciclo de vida de la compilación y ejecución de pruebas.
 
+### Ejecutar todas las pruebas
+
+Este comando ejecuta la suite por defecto definida en `pom.xml` (que apunta a `testng.xml`).
 ```bash
-mvn test
+mvn clean test
 ```
 
-### Ejecutar Suite Específica
+### Ejecutar un grupo específico de pruebas (ej. Smoke)
 
+Utiliza la propiedad `-Dgroups` para ejecutar solo los tests que pertenezcan a un grupo específico (definido en el código con `@Test(groups = "...")`).
 ```bash
-mvn test -DsuiteXmlFile=testng.xml
+# Ejecuta solo los tests del grupo "smoke"
+mvn clean test -Dgroups=smoke
 ```
 
-### Ejecutar Pruebas de Smoke
+### Ejecutar una clase de prueba específica
 
 ```bash
-mvn test -Dgroups=smoke
+mvn clean test -Dtest=IzertisHomePageTest
 ```
 
-### Ejecutar Prueba Específica
+### Ejecutar un método de prueba específico
 
 ```bash
-mvn test -Dtest=IzertisHomePageTest#testHomePageLoads
+mvn clean test -Dtest=IzertisHomePageTest#testHomePageLoads
 ```
 
-### Ejecutar con Navegador Específico
+### Pasar parámetros desde la línea de comandos
 
+Puedes sobrescribir los parámetros del navegador o la URL base.
 ```bash
-mvn test -Dbrowser=firefox
-```
+# Ejecutar en Firefox en modo headless
+mvn clean test -Dbrowser=firefox -Dheadless=true
 
-### Ejecutar en Modo Headless
-
-```bash
-mvn test -Dheadless=true
-```
-
-### Ejecutar con URL Específica
-
-```bash
-mvn test -Dbase.url=https://www.izertis.com/en/
+# Ejecutar en una URL diferente
+mvn clean test -Dbase.url=https://www.google.com
 ```
 
 ## 📊 Reportes
 
-### Generar Reportes de Allure
+La integración con Allure permite generar reportes detallados y visuales.
 
-1. **Ejecutar las pruebas**:
-```bash
-mvn test
-```
+1.  **Ejecutar las pruebas**:
+    Esto generará los archivos de resultados en el directorio `target/allure-results`.
+    ```bash
+    mvn clean test
+    ```
 
-2. **Generar el reporte**:
-```bash
-mvn allure:report
-```
-
-3. **Servir el reporte localmente**:
-```bash
-mvn allure:serve
-```
-
-El reporte se abrirá automáticamente en tu navegador predeterminado.
-
-### Alternativas sin Allure CLI
-
-Si no tienes Allure CLI instalado, puedes usar el plugin de Maven:
-
-```bash
-# Ejecutar tests y servir reporte directamente
-mvn test allure:serve
-
-# O generar reporte estático
-mvn allure:report
-```
-
-**Nota**: El plugin de Maven es más lento pero no requiere instalación adicional.
-
-### Ubicación de Reportes
-
-- **Resultados de Allure**: `allure-results/`
-- **Reporte HTML**: `allure-report/`
-- **Logs**: `logs/`
-- **Screenshots**: Incluidos en el reporte de Allure
+2.  **Generar y visualizar el reporte**:
+    Este comando procesa los resultados y levanta un servidor web local para mostrar el reporte.
+    ```bash
+    mvn allure:serve
+    ```
+    El reporte se abrirá automáticamente en tu navegador.
 
 ## 🎯 Casos de Prueba Incluidos
 
-### IzertisHomePageTest
+La suite actual contiene las siguientes pruebas para la página principal de Izertis:
 
-1. **testHomePageLoads**: Verifica que la página principal carga correctamente
-2. **testMainUIElementsPresent**: Verifica que los elementos principales de UI están presentes
-3. **testMainMenuNavigation**: Prueba la navegación del menú principal
-4. **testServicesSection**: Verifica la sección de servicios
-5. **testLanguageSwitching**: Prueba el cambio de idioma
-6. **testFooterSection**: Verifica la sección del footer
-7. **testPageSectionNavigation**: Prueba la navegación a diferentes secciones
-8. **testLogoFunctionality**: Verifica la funcionalidad del logo
+### `IzertisHomePageTest`
+
+1.  **`testHomePageLoads`** (`@group="smoke"`)
+    -   **Descripción**: Verifica que la página principal de Izertis carga correctamente.
+    -   **Pasos**:
+        -   Navega a la URL base.
+        -   Acepta las cookies si el banner está presente.
+        -   Verifica que la página se considera "cargada".
+        -   Valida que el título de la página y la URL son correctos.
+
+2.  **`testMainUIElementsPresent`** (`@group="smoke"`)
+    -   **Descripción**: Verifica que los elementos principales de la interfaz de usuario están presentes en la página principal.
+    -   **Pasos**:
+        -   Navega a la URL base y acepta cookies.
+        -   Verifica que el logo de Izertis es visible.
+        -   Verifica que el menú de navegación principal es visible.
+        -   Verifica que el título principal de la página se muestra y no está vacío.
 
 ## 📝 Buenas Prácticas
 
 ### Escribir Nuevas Pruebas
 
-1. **Extiende BaseTest**:
-```java
-public class NuevaPruebaTest extends BaseTest {
-    // Tu código aquí
-}
-```
+1.  **Crea una nueva clase de Test**: La clase debe terminar en `Test` y extender `BaseTest`.
+    ```java
+    public class MiNuevaPruebaTest extends BaseTest {
+        // ...
+    }
+    ```
 
-2. **Usa Page Objects**:
-```java
-@BeforeMethod
-public void setUp() {
-    homePage = new IzertisHomePage();
-}
-```
+2.  **Sigue el patrón de inicialización**: Usa `@BeforeMethod` y `@AfterMethod` para controlar el ciclo de vida del driver y de las páginas.
+    ```java
+    public class MiNuevaPruebaTest extends BaseTest {
+        private MiPagina miPagina;
 
-3. **Agrega Anotaciones de Allure**:
-```java
-@Test
-@Story("Nueva Funcionalidad")
-@Description("Descripción de la prueba")
-@Severity(SeverityLevel.NORMAL)
-public void testNuevaFuncionalidad() {
-    // Tu código aquí
-}
-```
+        @BeforeMethod(alwaysRun = true)
+        public void setUpTest() {
+            super.setUp(); // Primero inicializa el driver
+            miPagina = new MiPagina(); // Luego inicializa el Page Object
+        }
+
+        @AfterMethod(alwaysRun = true)
+        public void tearDownTest() {
+            super.tearDown();
+        }
+
+        @Test(description = "Descripción de mi nueva prueba")
+        public void miPrueba() {
+            // Lógica de la prueba usando miPagina
+        }
+    }
+    ```
+
+3.  **Usa anotaciones de Allure**: Describe tus pruebas con `@Description`, `@Epic`, `@Feature` y `@Story` para enriquecer los reportes. Usa `Allure.step()` para detallar los pasos.
 
 ### Crear Nuevos Page Objects
 
-1. **Extiende BasePage**:
-```java
-public class NuevaPagina extends BasePage {
-    @Override
-    public boolean isPageLoaded() {
-        // Implementa la lógica de verificación
-    }
-    
-    @Override
-    public String getPageName() {
-        return "Nueva Página";
-    }
-}
-```
+1.  **Crea una nueva clase Page**: La clase debe extender `BasePage`.
+2.  **Define los localizadores**: Usa la anotación `@FindBy` para definir los `WebElement`.
+3.  **Implementa los métodos abstractos**: `isPageLoaded()` y `getPageName()`.
+4.  **Añade métodos de acción**: Crea métodos públicos que encapsulen las interacciones con los elementos de la página.
 
 ## 🐛 Solución de Problemas
 
-### Problemas Comunes
-
-1. **Driver no encontrado**:
-   - WebDriverManager se encarga automáticamente de esto
-   - Verifica tu conexión a internet
-
-2. **Timeouts en elementos**:
-   - Ajusta los timeouts en `config.properties`
-   - Verifica que los locators sean correctos
-
-3. **Tests fallan esporádicamente**:
-   - Revisa los waits explícitos
-   - Considera agregar pequeñas pausas donde sea necesario
-
-### Logs y Debugging
-
-- Revisa los logs en la carpeta `logs/`
-- Los screenshots se incluyen automáticamente en los reportes
-- Usa `logger.info()` para agregar información de debug
-
-## 🤝 Contribuir
-
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/NuevaFuncionalidad`)
-3. Commit tus cambios (`git commit -m 'Agregar nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/NuevaFuncionalidad`)
-5. Abre un Pull Request
-
-## 📝 Licencia
-
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
-
-## 📞 Contacto
-
-Para preguntas o sugerencias sobre este proyecto de automatización para Izertis:
-
-- 📧 Email: [tu-email@ejemplo.com]
-- 🐛 Issues: [GitHub Issues](link-to-issues)
-- 📖 Documentación: [Wiki del Proyecto](link-to-wiki)
+-   **`WebDriver no está inicializado` o `NullPointerException`**: Asegúrate de que tu método `@BeforeMethod` en la clase de test llama a `super.setUp()` **antes** de inicializar cualquier Page Object.
+-   **Tests fallan esporádicamente (Flakiness)**: Revisa los waits en `ElementUtils`. Puede que necesites un `waitForElementToBeVisible` o `waitForElementToBeClickable` antes de interactuar con un elemento.
+-   **El reporte de Allure está vacío**: Asegúrate de que el `aspectjweaver` está configurado correctamente en el `maven-surefire-plugin` dentro de tu `pom.xml`.
 
 ---
 
