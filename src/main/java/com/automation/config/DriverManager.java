@@ -14,21 +14,20 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 
 /**
- * Gestor de WebDriver para inicializar y gestionar diferentes navegadores
+ * Gestor de WebDriver para inicializar diferentes navegadores
  */
 public class DriverManager {
     private static final Logger logger = LoggerFactory.getLogger(DriverManager.class);
-    private static final ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
-    private static Configuration config = Configuration.getInstance();
+    private static final Configuration config = Configuration.getInstance();
 
     private DriverManager() {
         // Constructor privado para evitar instanciación
     }
 
     /**
-     * Inicializa el WebDriver según la configuración
+     * Crea una nueva instancia de WebDriver según la configuración
      */
-    public static void initializeDriver() {
+    public static WebDriver createDriver() {
         String browserName = config.getBrowser().toLowerCase();
         
         // Sobrescribir con propiedades del sistema si están definidas
@@ -36,7 +35,7 @@ public class DriverManager {
             browserName = System.getProperty("browser").toLowerCase();
         }
         
-        logger.info("Inicializando navegador: {}", browserName);
+        logger.info("Creando una nueva instancia del navegador: {}", browserName);
         logger.info("Modo headless: {}", isHeadlessMode());
         
         WebDriver driver = switch (browserName) {
@@ -58,8 +57,8 @@ public class DriverManager {
             driver.manage().window().maximize();
         }
 
-        driverThreadLocal.set(driver);
-        logger.info("WebDriver inicializado correctamente");
+        logger.info("Instancia de WebDriver creada correctamente");
+        return driver;
     }
     
     /**
@@ -135,33 +134,5 @@ public class DriverManager {
         
         logger.info("Edge configurado con headless: {}", isHeadlessMode());
         return new EdgeDriver(options);
-    }
-
-    /**
-     * Obtiene la instancia actual del WebDriver
-     */
-    public static WebDriver getDriver() {
-        WebDriver driver = driverThreadLocal.get();
-        if (driver == null) {
-            throw new IllegalStateException("WebDriver no está inicializado. Llama a initializeDriver() primero.");
-        }
-        return driver;
-    }
-
-    /**
-     * Cierra y limpia el WebDriver
-     */
-    public static void quitDriver() {
-        WebDriver driver = driverThreadLocal.get();
-        if (driver != null) {
-            try {
-                driver.quit();
-                logger.info("WebDriver cerrado correctamente");
-            } catch (Exception e) {
-                logger.error("Error al cerrar WebDriver: " + e.getMessage());
-            } finally {
-                driverThreadLocal.remove();
-            }
-        }
     }
 } 

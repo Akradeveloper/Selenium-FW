@@ -1,7 +1,6 @@
 package com.automation.utils;
 
 import com.automation.config.Configuration;
-import com.automation.config.DriverManager;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -17,15 +16,21 @@ import java.util.List;
  * Utilidades para operaciones comunes con WebElement
  */
 public class ElementUtils {
-    private static final Logger logger = LoggerFactory.getLogger(ElementUtils.class);
-    private static final int DEFAULT_TIMEOUT = Configuration.getInstance().getExplicitWait();
+    private final Logger logger = LoggerFactory.getLogger(ElementUtils.class);
+    private final WebDriver driver;
+    private final WebDriverWait wait;
+
+    public ElementUtils(WebDriver driver) {
+        this.driver = driver;
+        int timeout = Configuration.getInstance().getExplicitWait();
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(timeout));
+    }
 
     /**
      * Espera a que un elemento sea clickeable y lo clickea
      */
-    public static void clickElement(WebElement element) {
+    public void clickElement(WebElement element) {
         try {
-            WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(DEFAULT_TIMEOUT));
             wait.until(ExpectedConditions.elementToBeClickable(element));
             element.click();
             logger.info("Elemento clickeado exitosamente");
@@ -41,9 +46,8 @@ public class ElementUtils {
     /**
      * Espera a que un elemento sea clickeable por locator y lo clickea
      */
-    public static void clickElement(By locator) {
+    public void clickElement(By locator) {
         try {
-            WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(DEFAULT_TIMEOUT));
             WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
             element.click();
             logger.info("Elemento clickeado exitosamente usando locator: {}", locator);
@@ -59,9 +63,8 @@ public class ElementUtils {
     /**
      * Espera a que un elemento sea visible y envía texto
      */
-    public static void sendKeys(WebElement element, String text) {
+    public void sendKeys(WebElement element, String text) {
         try {
-            WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(DEFAULT_TIMEOUT));
             wait.until(ExpectedConditions.visibilityOf(element));
             element.clear();
             element.sendKeys(text);
@@ -78,9 +81,8 @@ public class ElementUtils {
     /**
      * Espera a que un elemento sea visible por locator y envía texto
      */
-    public static void sendKeys(By locator, String text) {
+    public void sendKeys(By locator, String text) {
         try {
-            WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(DEFAULT_TIMEOUT));
             WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
             element.clear();
             element.sendKeys(text);
@@ -97,9 +99,8 @@ public class ElementUtils {
     /**
      * Espera a que un elemento sea visible y obtiene su texto
      */
-    public static String getText(WebElement element) {
+    public String getText(WebElement element) {
         try {
-            WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(DEFAULT_TIMEOUT));
             wait.until(ExpectedConditions.visibilityOf(element));
             String text = element.getText();
             logger.info("Texto obtenido: {}", text);
@@ -116,9 +117,8 @@ public class ElementUtils {
     /**
      * Espera a que un elemento sea visible por locator y obtiene su texto
      */
-    public static String getText(By locator) {
+    public String getText(By locator) {
         try {
-            WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(DEFAULT_TIMEOUT));
             WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
             String text = element.getText();
             logger.info("Texto obtenido usando locator {}: {}", locator, text);
@@ -135,9 +135,9 @@ public class ElementUtils {
     /**
      * Verifica si un elemento está presente
      */
-    public static boolean isElementPresent(By locator) {
+    public boolean isElementPresent(By locator) {
         try {
-            DriverManager.getDriver().findElement(locator);
+            driver.findElement(locator);
             return true;
         } catch (NoSuchElementException e) {
             return false;
@@ -147,7 +147,7 @@ public class ElementUtils {
     /**
      * Verifica si un elemento está visible
      */
-    public static boolean isElementVisible(WebElement element) {
+    public boolean isElementVisible(WebElement element) {
         try {
             return element.isDisplayed();
         } catch (NoSuchElementException | StaleElementReferenceException e) {
@@ -158,25 +158,23 @@ public class ElementUtils {
     /**
      * Espera a que un elemento sea visible
      */
-    public static WebElement waitForElementToBeVisible(By locator) {
-        WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(DEFAULT_TIMEOUT));
+    public WebElement waitForElementToBeVisible(By locator) {
         return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
     }
 
     /**
      * Espera a que un elemento sea clickeable
      */
-    public static WebElement waitForElementToBeClickable(By locator) {
-        WebDriverWait wait = new WebDriverWait(DriverManager.getDriver(), Duration.ofSeconds(DEFAULT_TIMEOUT));
+    public WebElement waitForElementToBeClickable(By locator) {
         return wait.until(ExpectedConditions.elementToBeClickable(locator));
     }
 
     /**
      * Scroll hacia un elemento
      */
-    public static void scrollToElement(WebElement element) {
+    public void scrollToElement(WebElement element) {
         try {
-            JavascriptExecutor js = (JavascriptExecutor) DriverManager.getDriver();
+            JavascriptExecutor js = (JavascriptExecutor) driver;
             js.executeScript("arguments[0].scrollIntoView(true);", element);
             Thread.sleep(500); // Pequeña pausa para que el scroll termine
             logger.info("Scroll realizado hacia el elemento");
@@ -189,9 +187,9 @@ public class ElementUtils {
     /**
      * Hover sobre un elemento
      */
-    public static void hoverOnElement(WebElement element) {
+    public void hoverOnElement(WebElement element) {
         try {
-            Actions actions = new Actions(DriverManager.getDriver());
+            Actions actions = new Actions(driver);
             actions.moveToElement(element).perform();
             logger.info("Hover realizado sobre el elemento");
         } catch (Exception e) {
@@ -203,7 +201,7 @@ public class ElementUtils {
     /**
      * Selecciona una opción de un dropdown por texto visible
      */
-    public static void selectByVisibleText(WebElement selectElement, String text) {
+    public void selectByVisibleText(WebElement selectElement, String text) {
         try {
             Select select = new Select(selectElement);
             select.selectByVisibleText(text);
@@ -217,7 +215,7 @@ public class ElementUtils {
     /**
      * Obtiene todos los elementos que coinciden con el locator
      */
-    public static List<WebElement> findElements(By locator) {
-        return DriverManager.getDriver().findElements(locator);
+    public List<WebElement> findElements(By locator) {
+        return driver.findElements(locator);
     }
 } 

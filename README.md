@@ -273,52 +273,76 @@ mvn allure:report
 7. **testPageSectionNavigation**: Prueba la navegación a diferentes secciones
 8. **testLogoFunctionality**: Verifica la funcionalidad del logo
 
-## 📝 Buenas Prácticas
+## 🎯 Buenas Prácticas
 
-### Escribir Nuevas Pruebas
+La filosofía de este framework es mantener una clara separación de responsabilidades, siguiendo patrones de diseño como Page Object Model y BDD.
 
-1. **Extiende BaseTest**:
-```java
-public class NuevaPruebaTest extends BaseTest {
-    // Tu código aquí
-}
-```
+### Escribir Nuevos Escenarios (BDD)
 
-2. **Usa Page Objects**:
-```java
-@BeforeMethod
-public void setUp() {
-    homePage = new IzertisHomePage();
-}
-```
+1.  **Define el comportamiento en Gherkin**: Añade tu `Scenario` en un fichero `.feature` en `src/test/resources/features`. Usa un lenguaje claro y descriptivo.
+    ```gherkin
+    Scenario: Verificar una nueva funcionalidad
+      Given navego a la página de la nueva funcionalidad
+      When realizo una acción específica
+      Then debería ver el resultado esperado
+    ```
 
-3. **Agrega Anotaciones de Allure**:
-```java
-@Test
-@Story("Nueva Funcionalidad")
-@Description("Descripción de la prueba")
-@Severity(SeverityLevel.NORMAL)
-public void testNuevaFuncionalidad() {
-    // Tu código aquí
-}
-```
+2.  **Implementa los Step Definitions**: Crea los métodos correspondientes en una clase dentro de `src/test/java/com/automation/stepdefinitions`. Estos métodos deben ser cortos y simplemente llamar a la lógica de los Page Objects.
+    ```java
+    public class NuevaFuncionalidadSteps {
+        
+        private MiPaginaDePrueba miPagina;
+
+        public NuevaFuncionalidadSteps(TestContext context) {
+            // Ejemplo con Inyección de Dependencias (mejora futura)
+            this.miPagina = context.getPageObjectManager().getMiPaginaDePrueba();
+        }
+
+        @When("realizo una acción específica")
+        public void realizo_una_accion_especifica() {
+            miPagina.hacerAlgoImportante();
+        }
+
+        @Then("debería ver el resultado esperado")
+        public void deberia_ver_el_resultado_esperado() {
+            Assert.assertTrue(miPagina.verificarResultado());
+        }
+    }
+    ```
+    *Nota: Los `Step Definitions` no deben contener lógica de Selenium (como `driver.findElement`). Su única responsabilidad es orquestar las llamadas a los Page Objects.*
 
 ### Crear Nuevos Page Objects
 
-1. **Extiende BasePage**:
-```java
-public class NuevaPagina extends BasePage {
-    @Override
-    public boolean isPageLoaded() {
-        // Implementa la lógica de verificación
+1.  **Crea una nueva clase** en el paquete `com.automation.pages` que extienda de `BasePage`.
+2.  **Define los WebElements**: Usa la anotación `@FindBy` para localizar los elementos de la página.
+3.  **Añade los métodos de acción**: Crea métodos públicos para cada interacción que un usuario pueda tener con la página (ej: `hacerLogin(user, pass)`, `buscarProducto(nombre)`). Estos métodos contienen la lógica de Selenium.
+
+    ```java
+    public class MiPaginaDePrueba extends BasePage {
+        
+        @FindBy(id = "boton-importante")
+        private WebElement botonImportante;
+
+        public void hacerAlgoImportante() {
+            logger.info("Realizando la acción importante");
+            clickElement(botonImportante);
+        }
+
+        public boolean verificarResultado() {
+            // Lógica de verificación...
+            return isElementVisible(unElementoQueAparece);
+        }
     }
-    
-    @Override
-    public String getPageName() {
-        return "Nueva Página";
-    }
-}
-```
+    ```
+
+### Gestión de Estado con Inyección de Dependencias
+
+Este framework utiliza **PicoContainer** (`cucumber-picocontainer`) para gestionar el estado de los escenarios y la inyección de dependencias.
+
+-   **`TestContext.java`**: Es el corazón de la gestión de estado. Se crea una nueva instancia para cada escenario y se inyecta en los constructores de las clases de Hooks y Step Definitions. Contiene la instancia del `WebDriver` y del `PageObjectManager`.
+-   **`PageObjectManager.java`**: Se encarga de instanciar los Page Objects, asegurando que todos compartan la misma instancia de `WebDriver` para un escenario dado.
+
+Este enfoque elimina la necesidad de usar variables estáticas (`static`), lo que hace que el framework sea más robusto, más fácil de depurar y compatible con la ejecución en paralelo.
 
 ## 🐛 Solución de Problemas
 

@@ -18,8 +18,8 @@ public abstract class BasePage {
     protected WebDriver driver;
     protected Configuration config;
 
-    public BasePage() {
-        this.driver = DriverManager.getDriver();
+    public BasePage(WebDriver driver) {
+        this.driver = driver;
         this.config = Configuration.getInstance();
         PageFactory.initElements(driver, this);
     }

@@ -1,5 +1,6 @@
 package com.automation.pages;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 
@@ -7,6 +8,10 @@ import org.openqa.selenium.support.FindBy;
  * Page Object para la página principal de Izertis
  */
 public class IzertisHomePage extends BasePage {
+
+    public IzertisHomePage(WebDriver driver) {
+        super(driver);
+    }
 
     // Locators de la página principal - Simplicados y robustos
     @FindBy(css = "img[alt*='Izertis'], .logo, [data-testid='logo']")
