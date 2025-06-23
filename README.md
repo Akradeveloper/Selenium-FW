@@ -1,68 +1,95 @@
 # 🚀 Proyecto de Automatización Selenium - Izertis
 
-Este proyecto contiene un framework de automatización desarrollado en Java con Selenium WebDriver para realizar pruebas automatizadas en el sitio web de [Izertis](https://www.izertis.com).
+Este proyecto contiene dos implementaciones diferentes de un framework de automatización desarrollado en Java con Selenium WebDriver para realizar pruebas automatizadas en el sitio web de [Izertis](https://www.izertis.com).
 
-## 📋 Tabla de Contenidos
+## 🌳 Ramas Disponibles
 
-- [Características](#características)
-- [Tecnologías Utilizadas](#tecnologías-utilizadas)
-- [Prerequisitos](#prerequisitos)
-- [Instalación](#instalación)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [Configuración](#configuración)
-- [Ejecución de Pruebas](#ejecución-de-pruebas)
-- [Reportes](#reportes)
-- [Buenas Prácticas](#buenas-prácticas)
-- [Contribuir](#contribuir)
+El proyecto está organizado en dos ramas principales, cada una implementando un enfoque diferente de automatización:
 
-## ✨ Características
+### 📝 [`without-cucumber`](../../tree/without-cucumber) - Enfoque TestNG Tradicional
 
-- **Page Object Model (POM)**: Implementación del patrón Page Object para mejor mantenibilidad
-- **Cross-browser Testing**: Soporte para Chrome, Firefox y Edge
-- **Configuración Flexible**: Configuración externa mediante archivos properties
-- **Reportes Detallados**: Integración con Allure para reportes visuales
-- **Logging Avanzado**: Sistema de logging con Logback
-- **Screenshots Automáticos**: Capturas de pantalla automáticas en caso de fallos
-- **Gestión Automática de Drivers**: WebDriverManager para gestión automática de drivers
-- **TestNG Integration**: Framework de testing robusto con TestNG
+Implementación clásica usando **TestNG** con Page Object Model.
 
-## 🛠 Tecnologías Utilizadas
+**🎯 Ideal para:**
+- Equipos familiarizados con TestNG
+- Proyectos que requieren control granular de ejecución
+- Casos de uso que no requieren BDD
 
-- **Java 17**
-- **Selenium WebDriver 4.18.1**
-- **TestNG 7.9.0**
-- **Maven 3.x**
-- **Allure 2.25.0** (Reportes)
-- **WebDriverManager 5.7.0**
-- **Logback 1.5.0** (Logging)
+**✨ Características:**
+- Framework basado en **TestNG 7.9.0**
+- Page Object Model (POM)
+- Reportes con **Allure 2.25.0**
+- Configuración flexible con properties
+- Logging avanzado con Logback
+- Screenshots automáticos en fallos
+- Soporte multi-browser (Chrome, Firefox, Edge)
 
-## 📋 Prerequisitos
+**🚀 Inicio Rápido:**
+```bash
+git checkout without-cucumber
+./run-tests.sh --all              # Ejecutar todas las pruebas
+./run-tests.sh --smoke --headless # Ejecutar pruebas smoke
+./run-tests.sh --report           # Generar reporte Allure
+```
 
-Antes de ejecutar este proyecto, asegúrate de tener instalado:
+---
+
+### 🥒 [`with-cucumber`](../../tree/with-cucumber) - Enfoque BDD con Cucumber
+
+Implementación usando **Cucumber** para Behavior-Driven Development (BDD).
+
+**🎯 Ideal para:**
+- Equipos que practican BDD
+- Colaboración estrecha con stakeholders no técnicos
+- Documentación ejecutable en lenguaje natural
+
+**✨ Características:**
+- Framework basado en **Cucumber-JVM**
+- Escenarios escritos en **Gherkin** (Given-When-Then)
+- Integration con **TestNG** como runner
+- Reportes con **Allure** + reportes nativos de Cucumber
+- Filtrado por tags (@smoke, @regression, etc.)
+- Steps reutilizables y modulares
+
+**🚀 Inicio Rápido:**
+```bash
+git checkout with-cucumber
+./run-tests.sh                           # Ejecutar todos los escenarios
+./run-tests.sh --tags "@smoke"           # Ejecutar solo escenarios @smoke
+./run-tests.sh --tags "@smoke and not @wip" # Filtrado avanzado
+./run-tests.sh --report                  # Generar reporte Allure
+```
+
+## 🤔 ¿Qué Rama Elegir?
+
+| Criterio | without-cucumber | with-cucumber |
+|----------|------------------|---------------|
+| **Curva de Aprendizaje** | ⭐⭐⭐ Fácil | ⭐⭐⭐⭐ Media |
+| **Colaboración con Business** | ⭐⭐ Limitada | ⭐⭐⭐⭐⭐ Excelente |
+| **Flexibilidad Técnica** | ⭐⭐⭐⭐⭐ Máxima | ⭐⭐⭐⭐ Alta |
+| **Documentación Ejecutable** | ⭐⭐ Básica | ⭐⭐⭐⭐⭐ Excelente |
+| **Mantenimiento** | ⭐⭐⭐⭐ Fácil | ⭐⭐⭐ Moderado |
+
+## 📋 Prerequisitos Comunes
+
+Ambas ramas requieren:
 
 - ☕ **Java 17** o superior
-- 📦 **Maven 3.6** o superior
-- 🌐 **Google Chrome, Firefox o Microsoft Edge**
-- 🔧 **Git** (para clonar el repositorio)
+- 📦 **Maven 3.6** o superior  
+- 🌐 **Chrome, Firefox o Edge**
+- 🔧 **Git**
 - 📊 **Allure CLI** (opcional, para reportes visuales)
 
 ### Verificar Instalaciones
 
 ```bash
-# Verificar Java
-java -version
-
-# Verificar Maven
-mvn -version
-
-# Verificar Git
-git --version
-
-# Verificar Allure (opcional)
-allure --version
+java -version    # Debe mostrar Java 17+
+mvn -version     # Debe mostrar Maven 3.6+
+git --version    # Para clonar y cambiar ramas
+allure --version # Opcional, para reportes visuales
 ```
 
-## 🚀 Instalación
+## 🚀 Instalación Inicial
 
 ### 1. Clonar el Repositorio
 
@@ -71,295 +98,115 @@ git clone <repository-url>
 cd izertis-selenium-automation
 ```
 
-### 2. Instalar Dependencias
-
-```bash
-mvn clean install
-```
-
-### 3. Instalar Allure CLI (Opcional pero Recomendado)
-
-Para generar reportes visuales atractivos:
+### 2. Instalar Allure CLI (Recomendado)
 
 **Mac (Homebrew):**
 ```bash
 brew install allure
 ```
 
-**Linux:**
+**Linux/Windows:**
 ```bash
-# Descargar desde: https://docs.qameta.io/allure/#_installing_a_commandline
-# O usar el instalador automático:
-curl -o allure-2.34.0.tgz -Ls https://github.com/allure-framework/allure2/releases/download/2.34.0/allure-2.34.0.tgz
-sudo tar -zxvf allure-2.34.0.tgz -C /opt/
-sudo ln -s /opt/allure-2.34.0/bin/allure /usr/bin/allure
+# Ver instrucciones en: https://docs.qameta.io/allure/#_installing_a_commandline
 ```
 
-**Windows:**
-```bash
-# Usar Scoop:
-scoop install allure
-
-# O descargar manualmente desde GitHub
-```
-
-### 4. Verificar Instalación
+### 3. Elegir y Cambiar a una Rama
 
 ```bash
-mvn test -Dtest=IzertisHomePageTest#testHomePageLoads
+# Para enfoque TestNG tradicional
+git checkout without-cucumber
+
+# Para enfoque BDD con Cucumber  
+git checkout with-cucumber
 ```
 
-## 📁 Estructura del Proyecto
+### 4. Instalar Dependencias
+
+```bash
+mvn clean install
+```
+
+### 5. Ejecutar Prueba de Verificación
+
+```bash
+# En rama without-cucumber
+./run-tests.sh --all
+
+# En rama with-cucumber  
+./run-tests.sh
+```
+
+## 📊 Reportes y Resultados
+
+Ambas ramas generan:
+
+- **📋 Reportes de Allure**: `target/allure-report/`
+- **📁 Resultados**: `target/allure-results/`
+- **📝 Logs**: `logs/`
+- **🖼️ Screenshots**: En reportes de Allure (automáticos en fallos)
+
+## 🛠️ Scripts de Automatización
+
+Ambas ramas incluyen el script `run-tests.sh` con funcionalidades:
+
+- ✅ Limpieza automática de `target/` antes de cada ejecución
+- 🌐 Selección de navegador (chrome, firefox, edge)
+- 👻 Modo headless
+- 📊 Generación automática de reportes
+- 🎯 Filtrado de pruebas (por grupos o tags)
+
+## 🔄 Cambiar Entre Ramas
+
+```bash
+# Ver ramas disponibles
+git branch -a
+
+# Cambiar a rama sin Cucumber
+git checkout without-cucumber
+
+# Cambiar a rama con Cucumber
+git checkout with-cucumber
+
+# Volver a main (este README)
+git checkout main
+```
+
+## 📁 Estructura Común
 
 ```
 izertis-selenium-automation/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── com/automation/
-│   │   │       ├── config/           # Configuraciones del framework
-│   │   │       │   ├── Configuration.java
-│   │   │       │   └── DriverManager.java
-│   │   │       ├── pages/            # Page Objects
-│   │   │       │   ├── BasePage.java
-│   │   │       │   └── IzertisHomePage.java
-│   │   │       └── utils/            # Utilidades
-│   │   │           └── ElementUtils.java
-│   │   └── resources/
-│   │       ├── config.properties     # Configuración del framework
-│   │       └── logback.xml          # Configuración de logging
-│   └── test/
-│       ├── java/
-│       │   └── com/automation/tests/ # Clases de prueba
-│       │       ├── BaseTest.java
-│       │       └── IzertisHomePageTest.java
-│       └── resources/
-├── target/                          # Archivos generados
-├── logs/                           # Archivos de log
-├── pom.xml                         # Configuración de Maven
-├── testng.xml                      # Configuración de TestNG
-└── README.md                       # Este archivo
+├── src/main/java/com/automation/
+│   ├── config/          # Configuración del framework
+│   ├── pages/           # Page Objects  
+│   └── utils/           # Utilidades comunes
+├── src/test/java/com/automation/
+│   ├── tests/           # Pruebas (TestNG) o Steps (Cucumber)
+│   └── listeners/       # Listeners de Allure
+├── target/              # Archivos generados
+├── logs/               # Logs de ejecución
+├── run-tests.sh        # Script de automatización
+├── pom.xml             # Configuración Maven
+└── testng.xml          # Configuración TestNG
 ```
-
-## ⚙️ Configuración
-
-### Archivo de Configuración
-
-El archivo `src/main/resources/config.properties` contiene la configuración principal:
-
-```properties
-# URL Base
-base.url=https://www.izertis.com
-
-# Configuración del Navegador
-browser=chrome
-headless=false
-maximize.window=true
-
-# Timeouts (en segundos)
-implicit.wait=10
-explicit.wait=15
-page.load.timeout=30
-```
-
-### Variables de Entorno
-
-Puedes sobrescribir la configuración usando variables de entorno:
-
-```bash
-export BROWSER=firefox
-export HEADLESS=true
-export BASE_URL=https://www.izertis.com/en/
-```
-
-## 🧪 Ejecución de Pruebas
-
-### Ejecutar Todas las Pruebas
-
-```bash
-mvn test
-```
-
-### Ejecutar Suite Específica
-
-```bash
-mvn test -DsuiteXmlFile=testng.xml
-```
-
-### Ejecutar Pruebas de Smoke
-
-```bash
-mvn test -Dgroups=smoke
-```
-
-### Ejecutar Prueba Específica
-
-```bash
-mvn test -Dtest=IzertisHomePageTest#testHomePageLoads
-```
-
-### Ejecutar con Navegador Específico
-
-```bash
-mvn test -Dbrowser=firefox
-```
-
-### Ejecutar en Modo Headless
-
-```bash
-mvn test -Dheadless=true
-```
-
-### Ejecutar con URL Específica
-
-```bash
-mvn test -Dbase.url=https://www.izertis.com/en/
-```
-
-## 📊 Reportes
-
-### Generar Reportes de Allure
-
-1. **Ejecutar las pruebas**:
-```bash
-mvn test
-```
-
-2. **Generar el reporte**:
-```bash
-mvn allure:report
-```
-
-3. **Servir el reporte localmente**:
-```bash
-mvn allure:serve
-```
-
-El reporte se abrirá automáticamente en tu navegador predeterminado.
-
-### Alternativas sin Allure CLI
-
-Si no tienes Allure CLI instalado, puedes usar el plugin de Maven:
-
-```bash
-# Ejecutar tests y servir reporte directamente
-mvn test allure:serve
-
-# O generar reporte estático
-mvn allure:report
-```
-
-**Nota**: El plugin de Maven es más lento pero no requiere instalación adicional.
-
-### Ubicación de Reportes
-
-- **Resultados de Allure**: `allure-results/`
-- **Reporte HTML**: `allure-report/`
-- **Logs**: `logs/`
-- **Screenshots**: Incluidos en el reporte de Allure
-
-## 🎯 Casos de Prueba Incluidos
-
-### IzertisHomePageTest
-
-1. **testHomePageLoads**: Verifica que la página principal carga correctamente
-2. **testMainUIElementsPresent**: Verifica que los elementos principales de UI están presentes
-3. **testMainMenuNavigation**: Prueba la navegación del menú principal
-4. **testServicesSection**: Verifica la sección de servicios
-5. **testLanguageSwitching**: Prueba el cambio de idioma
-6. **testFooterSection**: Verifica la sección del footer
-7. **testPageSectionNavigation**: Prueba la navegación a diferentes secciones
-8. **testLogoFunctionality**: Verifica la funcionalidad del logo
-
-## 📝 Buenas Prácticas
-
-### Escribir Nuevas Pruebas
-
-1. **Extiende BaseTest**:
-```java
-public class NuevaPruebaTest extends BaseTest {
-    // Tu código aquí
-}
-```
-
-2. **Usa Page Objects**:
-```java
-@BeforeMethod
-public void setUp() {
-    homePage = new IzertisHomePage();
-}
-```
-
-3. **Agrega Anotaciones de Allure**:
-```java
-@Test
-@Story("Nueva Funcionalidad")
-@Description("Descripción de la prueba")
-@Severity(SeverityLevel.NORMAL)
-public void testNuevaFuncionalidad() {
-    // Tu código aquí
-}
-```
-
-### Crear Nuevos Page Objects
-
-1. **Extiende BasePage**:
-```java
-public class NuevaPagina extends BasePage {
-    @Override
-    public boolean isPageLoaded() {
-        // Implementa la lógica de verificación
-    }
-    
-    @Override
-    public String getPageName() {
-        return "Nueva Página";
-    }
-}
-```
-
-## 🐛 Solución de Problemas
-
-### Problemas Comunes
-
-1. **Driver no encontrado**:
-   - WebDriverManager se encarga automáticamente de esto
-   - Verifica tu conexión a internet
-
-2. **Timeouts en elementos**:
-   - Ajusta los timeouts en `config.properties`
-   - Verifica que los locators sean correctos
-
-3. **Tests fallan esporádicamente**:
-   - Revisa los waits explícitos
-   - Considera agregar pequeñas pausas donde sea necesario
-
-### Logs y Debugging
-
-- Revisa los logs en la carpeta `logs/`
-- Los screenshots se incluyen automáticamente en los reportes
-- Usa `logger.info()` para agregar información de debug
 
 ## 🤝 Contribuir
 
 1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/NuevaFuncionalidad`)
-3. Commit tus cambios (`git commit -m 'Agregar nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/NuevaFuncionalidad`)
-5. Abre un Pull Request
-
-## 📝 Licencia
-
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
-
-## 📞 Contacto
-
-Para preguntas o sugerencias sobre este proyecto de automatización para Izertis:
-
-- 📧 Email: [tu-email@ejemplo.com]
-- 🐛 Issues: [GitHub Issues](link-to-issues)
-- 📖 Documentación: [Wiki del Proyecto](link-to-wiki)
+2. Crea una feature branch (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit tus cambios (`git commit -am 'Agregar nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Crear un Pull Request
 
 ---
 
-**¡Felices pruebas automatizadas! 🎉** 
+## 🎯 Próximos Pasos
+
+1. **Elige tu rama**: Decide entre `without-cucumber` o `with-cucumber`
+2. **Haz checkout**: `git checkout [rama-elegida]`
+3. **Lee el README específico**: Cada rama tiene documentación detallada
+4. **Ejecuta las pruebas**: Usa `./run-tests.sh` para comenzar
+5. **Explora los reportes**: Revisa los resultados en Allure
+
+---
+
+¿Necesitas ayuda para decidir? Revisa la [comparación detallada](#-qué-rama-elegir) arriba o explora ambas ramas para ver cuál se adapta mejor a tu proyecto. 
