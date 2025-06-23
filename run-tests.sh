@@ -60,6 +60,16 @@ run_tests() {
     echo -e "  Headless: $headless"
     echo ""
     
+    # Limpiar proyecto antes de ejecutar pruebas
+    echo -e "${YELLOW}Limpiando carpeta target...${NC}"
+    mvn clean
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}✗ Error al limpiar el proyecto${NC}"
+        return 1
+    fi
+    echo -e "${GREEN}✓ Carpeta target limpiada${NC}"
+    echo ""
+    
     # Construir comando Maven
     local mvn_cmd="mvn test"
     
